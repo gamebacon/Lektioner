@@ -1,28 +1,28 @@
 using System;
 
-public class Övninigar4 {
+public class Övning4{
 
 	public static void Main(string[] args) {
-		new Övningar4();
+		new Övning4();
 	}
 
 
-	public Övningar4() { 
+	public Övning4() { 
 
 
+		GameState state = GameState.init;
 		string promptString = "Define a ship or type \'help\' for instructions.";
-
-
 		int[,] AIBoard = new int[10,10];
 		int[,] userBoard = new int[10,10];
+	
+		InitAI(AIBoard);
+		string[] ships = Enum.GetNames(typeof(ShipType));
 
-		
+		for(int i = 0; i < ships.Length;) {
+			ShipType type = (ShipType) Enum.Parse(typeof(ShipType), ships[i]);
 
-		//Console.WriteLine(helpString);
-
-		while(true) {
 			Console.WriteLine(promptString);
-			Console.Write("Ship: ");
+			Console.Write(Upper(type.ToString()) + ": ");
 
 			string userInput = Console.ReadLine();
 
@@ -33,44 +33,87 @@ public class Övninigar4 {
 				break;
 			}
 
-			Ship ship = ParseShip(userInput.ToLower());
+			Ship ship = ParseShip(userInput.ToLower() + " " + type);
 
 			if(ship == null) {
 				Help();
 				continue;
-			} else if(!TryPlaceShip(ship, userBoard)) {
-				Console.WriteLine("It can't fit there!");
-				continue;
 			}
 
-			displayBoard(userBoard);
+			if(!TryPlaceShip(ship, userBoard)) {
+				Console.WriteLine("It can't fit there!");
+				continue;
+			} else {
+				Console.WriteLine(String.Format("{0} placed on {1}!", type, userInput));
+				i++;
+			}
+
+			DisplayBoard(userBoard);
  		}
+
+		state = GameState.game;
+
+		while(state = GameState.game) { 
+			// game
+		}
 
 
 	}
 
+		public void InitAI(int[,] board) {
+			Random random = new Random();
+			string[] ships = Enum.GetNames(typeof(ShipType));
+
+			for(int i = 0; i < ships.Length;) {
+				ShipType type = (ShipType) Enum.Parse(typeof(ShipType), ships[i]);
+
+				char c = (char) (random.Next(97, 107));
+				int num = random.Next(1, 10);
+				Direction dir = (Direction) random.Next(4); 
+
+				string str = String.Format("{0}{1} {2} {3}", c, num, dir, ships[i]).ToLower();
+
+				Console.WriteLine(str);
+
+				Ship ship = ParseShip(str);
+				
+				if(TryPlaceShip(ship, board)) {
+					i++;
+				}
+			}	
+		}
+
 
 		public void Help() {
-				string helpString = "Enter a starting cord (A-J + 1-10) and a direction (left, right, up, down) and a size (1-4)\nFormat: <cord> <direction> <size>\nExample: b3 down 2";
-		this.type = type;
+
+				string helpString = "\nEnter a starting cord (a-j + 1-10) and a direction (left, right, up, down)\nFormat: <cord> <direction>";
+
+				Console.WriteLine("-------HELP MENU---------");
+
+				Console.WriteLine("Ships and their sizes:");
+
+				foreach(string ship in Enum.GetNames(typeof(ShipType))) {
+					ShipType type = (ShipType) Enum.Parse(typeof(ShipType), ship);
+					Console.WriteLine(String.Format("    {0}: {1}", Upper(ship), (int) type));
+				}
 
 				int[,] exampleBoard = new int[10,10];
-				Ship exampleShip = ParseShip("b3 down 2");
+				Ship exampleShip = ParseShip("b3 down destroyer");
 				TryPlaceShip(exampleShip, exampleBoard);
 
 				Console.WriteLine(helpString);
-				displayBoard(exampleBoard);
+				Console.WriteLine("Example for Destroyer, \"b3 down\" gives:");
+				DisplayBoard(exampleBoard);
+				Console.WriteLine("-------HELP MENU---------");
 			
 		}
 			
 		public bool TryPlaceShip(Ship ship, int[,] board) {
-	
 			for(int i = 0; i < 2; i++) {
 					int x = 0;
 					int y = 0;
-			
 
-					for(int size = 0; size < ship.size; size++) {
+					for(int size = 0; size < (int) ship.type; size++) {
 
 
 						int locX = ship.startPos.x - 1 + x;
@@ -97,7 +140,7 @@ public class Övninigar4 {
 	return true;
 	}
 
-		public void displayBoard(int[,] board) {
+		public void DisplayBoard(int[,] board) {
 			string abc = "ABCDEFGHIJ";
 
 			Console.WriteLine("    1 2 3 4 5 6 7 8 9 10\n");
@@ -110,6 +153,8 @@ public class Övninigar4 {
 				}
 				Console.WriteLine("");
 			}
+
+
 		}
 		
 		public Ship ParseShip(string str) {
@@ -120,12 +165,10 @@ public class Övninigar4 {
 
 				Cord cord = new Cord(args[0]);
 				Direction dir = (Direction) Enum.Parse(typeof(Direction), args[1]);
-				int size = Int32.Parse(args[2]);
 
-				if(size > Ship.MAX_SIZE || size < Ship.MIN_SIZE)
-					return null;
+				ShipType  type = (ShipType) Enum.Parse(typeof(ShipType), args[2]);
 
-				ship = new Ship(cord, dir, size);
+				ship = new Ship(cord, dir, type);
 			} catch (Exception e) {
 				if(false)
 					Console.WriteLine(e.ToString());
@@ -134,26 +177,35 @@ public class Övninigar4 {
 			return ship;
 		}
 
+		public string Upper(string str) { 
+			return Char.ToUpper(str[0]) + str.Substring(1, str.Length-1);
+		}
+
 }
 
-public class Ship {
-	public Cord startPos {get; private set;}
-	public Direction dir {get; private set;}
-	public int size {get; private set;}
 
-	public const int MIN_SIZE = 2;
-	public const int MAX_SIZE = 5;
+public enum GameState {
+	init,
+	game,
+	gameover
+}
+ 
 
-	publci ShipType type {get; private set;}
 
-	public enum ShipType {
+
+public enum ShipType {
 		carrier = 5,
 		battleship = 4,
 		cruiser = 3,
 		submarine = 3,
 		destroyer = 2
-	}
-	
+}
+
+public class Ship {
+	public ShipType type {get; private set;}
+	public Cord startPos {get; private set;}
+	public Direction dir {get; private set;}
+
 	public Ship(Cord startPos, Direction dir, ShipType type) 
 	{
 		this.startPos = startPos;
