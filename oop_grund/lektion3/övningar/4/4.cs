@@ -1,7 +1,6 @@
 using System;
-using System.Drawing;
 
-public class Övningar4 {
+public class Övninigar4 {
 
 	public static void Main(string[] args) {
 		new Övningar4();
@@ -9,14 +8,18 @@ public class Övningar4 {
 
 
 	public Övningar4() { 
-		string helpString = "Enter a starting cord (A-J + 1-10) and a direction (left, right, up, down) and a size (1-4)\nFormat: <cord> <direction> <size>\nExample: b3 down 2";
-		string promptString = "Define the ship or type \'help\' for instructions.";
+
+
+		string promptString = "Define a ship or type \'help\' for instructions.";
+
+
 		int[,] AIBoard = new int[10,10];
 		int[,] userBoard = new int[10,10];
 
-		Console.WriteLine(helpString);
-		display(userBoard);
 		
+
+		//Console.WriteLine(helpString);
+
 		while(true) {
 			Console.WriteLine(promptString);
 			Console.Write("Ship: ");
@@ -24,27 +27,41 @@ public class Övningar4 {
 			string userInput = Console.ReadLine();
 
 			if(userInput == "help") {
-				Console.WriteLine(helpString);
+				Help();
 				continue;
 			} else if(userInput == "exit") {
 				break;
 			}
 
-			Ship ship = Parse(userInput.ToLower());
+			Ship ship = ParseShip(userInput.ToLower());
 
 			if(ship == null) {
-				Console.WriteLine(helpString);
+				Help();
 				continue;
 			} else if(!TryPlaceShip(ship, userBoard)) {
 				Console.WriteLine("It can't fit there!");
 				continue;
 			}
 
-			display(userBoard);
+			displayBoard(userBoard);
  		}
 
 
 	}
+
+
+		public void Help() {
+				string helpString = "Enter a starting cord (A-J + 1-10) and a direction (left, right, up, down) and a size (1-4)\nFormat: <cord> <direction> <size>\nExample: b3 down 2";
+		this.type = type;
+
+				int[,] exampleBoard = new int[10,10];
+				Ship exampleShip = ParseShip("b3 down 2");
+				TryPlaceShip(exampleShip, exampleBoard);
+
+				Console.WriteLine(helpString);
+				displayBoard(exampleBoard);
+			
+		}
 			
 		public bool TryPlaceShip(Ship ship, int[,] board) {
 	
@@ -80,7 +97,7 @@ public class Övningar4 {
 	return true;
 	}
 
-		public void display(int[,] board) {
+		public void displayBoard(int[,] board) {
 			string abc = "ABCDEFGHIJ";
 
 			Console.WriteLine("    1 2 3 4 5 6 7 8 9 10\n");
@@ -95,7 +112,7 @@ public class Övningar4 {
 			}
 		}
 		
-		public Ship Parse(string str) {
+		public Ship ParseShip(string str) {
 			Ship ship = null;
 
 			try {
@@ -105,7 +122,7 @@ public class Övningar4 {
 				Direction dir = (Direction) Enum.Parse(typeof(Direction), args[1]);
 				int size = Int32.Parse(args[2]);
 
-				if(size > 4 || size < 1)
+				if(size > Ship.MAX_SIZE || size < Ship.MIN_SIZE)
 					return null;
 
 				ship = new Ship(cord, dir, size);
@@ -119,6 +136,33 @@ public class Övningar4 {
 
 }
 
+public class Ship {
+	public Cord startPos {get; private set;}
+	public Direction dir {get; private set;}
+	public int size {get; private set;}
+
+	public const int MIN_SIZE = 2;
+	public const int MAX_SIZE = 5;
+
+	publci ShipType type {get; private set;}
+
+	public enum ShipType {
+		carrier = 5,
+		battleship = 4,
+		cruiser = 3,
+		submarine = 3,
+		destroyer = 2
+	}
+	
+	public Ship(Cord startPos, Direction dir, ShipType type) 
+	{
+		this.startPos = startPos;
+		this.dir = dir;
+		this.type = type;
+		
+	}
+	
+}
 
 public class Cord {
 	public int x;
@@ -146,20 +190,7 @@ public class Cord {
 	
 }
 
-public class Ship {
-	public Cord startPos {get; private set;}
-	public Direction dir {get; private set;}
-	public int size {get; private set;}
-	
-	public Ship(Cord startPos, Direction dir, int size) 
-	{
-		this.startPos = startPos;
-		this.dir = dir;
-		this.size = size;
-		
-	}
-	
-}
+
 
 public enum Direction {
 	up,
