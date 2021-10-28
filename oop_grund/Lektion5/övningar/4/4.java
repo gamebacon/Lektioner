@@ -2,50 +2,144 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Scanner;
 
-class Three {
+class Four {
+	public static int totalRooms; 
+
 	public static void main(String[] args) {
-		
+		new Four();
 	}
 
-	public Three() {
-		Player player = new Player();
-
+	public Four() {
 		Room hallway = new Hallway();
-
-		Room livingroom = new Livingroom();
-		Room upperLivingroom= new UpperLivingroom();
-
-		Room bathroom= new Bathroom();
 		Room hallwayBathroom = new HallwayBathroom();
-
-		Room bedroom = new Bedroom();
-		Room masterBedroom = new MasterBedroom();
-
-		Room basement = new Basement();
-		Room attic = new Attic();
-		Room utilityroom = new Utilityroom();
-		Room diningroom = new Diningroom();
-		Room kitchen = new Kitchen();
-
+		Room livingroom = new Livingroom();
+		Room upperLivingroom = new UpperLivingroom();
 		Room stairway = new Stairway();
 		Room upperStairway = new UpperStairway();
+		Room bathroom = new Bathroom();
+		Room basement = new Basement();
+		Room diningroom = new Diningroom();
+		Room kitchen = new Kitchen();
+		Room utilityroom = new Utilityroom();
+		Room bedroom = new Bedroom();
+		Room masterBedroom = new MasterBedroom();
+		Room attic = new Attic();
+		Room exitroom = new Exitroom();
 
 
-		List<Room> hallwayRooms = new ArrayList<Room>(Arrays.asList(new Room[]{livingroom, hallwayBathroom}));
+
+		List<Room> exitroomRooms = new ArrayList<Room>(Arrays.asList(new Room[]{}));
+		List<Room> hallwayRooms = new ArrayList<Room>(Arrays.asList(new Room[]{livingroom, hallwayBathroom, exitroom}));
 		List<Room> hallwayBathroomRooms = new ArrayList<Room>(Arrays.asList(new Room[]{hallway}));
-
-		List<Room> livingroomRooms= new ArrayList<Room>(Arrays.asList(new Room[]{hallway, kitchen,  stairway}));
-
-		List<Room> stairWayRooms = new ArrayList<Room>(Arrays.asList(new Room[]{livingroom, upperStairway}));
-		List<Room> upperStairwayRooms= new ArrayList<Room>(Arrays.asList(new Room[]{upperLivingroom, stairway}));
-
+		List<Room> livingroomRooms= new ArrayList<Room>(Arrays.asList(new Room[]{hallway, kitchen,  stairway, bathroom, basement, diningroom}));
 		List<Room> upperLivingroomRooms = new ArrayList<Room>(Arrays.asList(new Room[]{upperStairway, attic, bedroom, masterBedroom}));
+		List<Room> stairwayRooms = new ArrayList<Room>(Arrays.asList(new Room[]{livingroom, upperStairway}));
+		List<Room> upperStairwayRooms = new ArrayList<Room>(Arrays.asList(new Room[]{upperLivingroom, stairway}));
+		List<Room> bathroomRooms = new ArrayList<Room>(Arrays.asList(new Room[]{livingroom}));
+		List<Room> basementRooms = new ArrayList<Room>(Arrays.asList(new Room[]{livingroom}));
+		List<Room> diningroomRooms = new ArrayList<Room>(Arrays.asList(new Room[]{livingroom}));
+		List<Room> kitchenRooms = new ArrayList<Room>(Arrays.asList(new Room[]{livingroom}));
+		List<Room> utilityroomRooms= new ArrayList<Room>(Arrays.asList(new Room[]{livingroom}));
+		List<Room> bedroomRooms = new ArrayList<Room>(Arrays.asList(new Room[]{upperLivingroom}));
+		List<Room> masterBedroomRooms = new ArrayList<Room>(Arrays.asList(new Room[]{upperLivingroom}));
+		List<Room> atticRooms = new ArrayList<Room>(Arrays.asList(new Room[]{upperLivingroom}));
 
 		HashMap<Room, List<Room>> roomDest = new HashMap<Room, List<Room>>();
+		roomDest.put(hallway, hallwayRooms);
+		roomDest.put(hallwayBathroom, hallwayBathroomRooms);
+		roomDest.put(livingroom, livingroomRooms);
+		roomDest.put(upperLivingroom, upperLivingroomRooms);
+		roomDest.put(stairway, stairwayRooms);
+		roomDest.put(upperStairway, upperStairwayRooms);
+		roomDest.put(bathroom, bathroomRooms);
+		roomDest.put(basement, basementRooms);
+		roomDest.put(diningroom, diningroomRooms);
+		roomDest.put(kitchen, kitchenRooms);
+		roomDest.put(utilityroom, utilityroomRooms);
+		roomDest.put(bedroom, bedroomRooms);
+		roomDest.put(masterBedroom, masterBedroomRooms);
+		roomDest.put(attic, atticRooms);
+		
+		Four.totalRooms = roomDest.size();
+		
+		Player player = new Player(100, 0);
+
+		Scanner scanner = new Scanner(System.in);
+		Room currentRoom = hallway;
+			
+		Util.clear(100);	
+		System.out.println("Welcome to the House of Witchcraft!");
+		System.out.println("In here you may find treasure or agonoy, be warned!");
+		System.out.println("You are currently in " + currentRoom.name);
+
+		while(true) {
+			System.out.println(
+				String.format(
+						"You have %d health and %d coins.",
+						player.getHealth(),
+						player.coins 
+				)
+			);
+
+			List<Room> rooms = roomDest.get(currentRoom);
+
+			Room selectedRoom = null;
+			System.out.print("Where would you like to go?");
+
+			for(Room room : rooms) {
+				System.out.print(String.format(" *[%s]", room.name));
+			}
+
+			System.out.print("\nRoom: ");
+
+			String in = scanner.nextLine();
 
 
-	
+			for(Room room : rooms) {
+				if(room.name.equalsIgnoreCase(in)) {
+					selectedRoom = room;
+					break;
+				}
+			}
+			
+
+			Util.clear(50);
+
+			if(selectedRoom == null) {
+				System.out.println("There is no such room as \"" + in + "\".");
+			} else {
+				if(selectedRoom.equals(exitroom)) {
+					System.out.println("Come back soon!");
+					player.coins += player.roomsVisited * 15;
+					Util.showResults(player);
+					break;
+				} else {
+					System.out.println("Now entering " + selectedRoom.name + "!");
+					currentRoom = selectedRoom;
+				}
+
+				if(!currentRoom.hasEntered) {
+					player.roomsVisited++;
+					player.coins += currentRoom.coins;
+					System.out.println(String.format("You found %s coins in %s!", currentRoom.coins, currentRoom.name));
+
+					float rand = (float) Math.random();
+
+					if(rand > currentRoom.trapChance) {
+						int damage = currentRoom.onTrap(player);
+						player.addHealth(-damage);
+						if(player.getHealth() <= 0) {
+							Util.showResults(player);
+							break;
+						}
+					}
+
+					currentRoom.hasEntered = true;
+				}
+			}
+		}
 
 		
 
@@ -53,6 +147,7 @@ class Three {
 	}
 
 }
+
 
 class Util {
 	
@@ -60,15 +155,41 @@ class Util {
 		return (int) (Math.random() * ((max-min) + 1)) + min;
 	}
 
+	public static void clear(int lines) {
+		for(int i = 0; i < lines; i++) {
+			System.out.println();
+		}
+	}
+	
+	public static void showResults(Player player)  {
+		if(player.getHealth() <= 0)
+			System.out.println("You died!");
+
+		System.out.println(
+			String.format(
+				"You finished with %d health and %d coins!\nYou entered %d/%d rooms.",
+				player.getHealth(),
+				player.coins,
+				player.roomsVisited,
+				Four.totalRooms
+			)	
+		);
+	}
+
 }
 
 class Player {
+	public int roomsVisited; 
 	private int health;
 	public int coins;
 
+	public Player(int health, int coins) {
+		this.health = health;
+		this.coins = coins;
+	}
 
-	public void setHealth(int health) {
-		this.health -= health;
+	public void addHealth(int health) {
+		this.health += health;
 	}
 	
 	public int getHealth() {
@@ -79,10 +200,10 @@ class Player {
 
 
 abstract class Room {
-	final String name;
-	final int coins;
+	public final String name;
+	public final int coins;
 	public float trapChance;
-	private boolean hasEntered;
+	public boolean hasEntered;
 	
 	public Room(String name, int maxCoins, float trapChance) {
 		this.name = name;
@@ -90,11 +211,25 @@ abstract class Room {
 		this.trapChance = trapChance;
 	}
 
-	public void onEnter(Player player) {
-
+	@Override
+	public String toString() {
+		return name;	
 	}
 
 	public abstract int onTrap(Player player);
+}
+
+class Exitroom extends Room {
+
+
+	public Exitroom() {
+		super("Exit", 25, 0.75f);
+	}
+
+	@Override
+	public int onTrap(Player player) {
+		return 0;
+	}
 }
 
 class Livingroom extends Room {
