@@ -5,11 +5,13 @@ public class Five {
 	public static void Main(string[] args) {
 
 		string[] actions = {"Exit", "Create", "Change dir", "Remove", "List"};
+		DirectoryInfo dInfo = new DirectoryInfo(".");
+		string path = dInfo.FullName;
+		Clear(100);
 
 		while(true) {
-			DirectoryInfo dInfo = new DirectoryInfo(".");
-			string path = dInfo.FullName;
 
+			Console.WriteLine("*********************************");
 			Console.WriteLine("Current path: \"{0}\"", path);
 			Console.WriteLine("What would you like to do?");	
 
@@ -21,6 +23,8 @@ public class Five {
 			try {
 				choise = Int32.Parse(Console.ReadLine());
 			} catch(Exception) {}
+
+			Console.WriteLine("*************** {0} ****************", actions[choise-1]);
 				
 			if(choise== 1) 
 			{
@@ -66,29 +70,69 @@ public class Five {
 			}
 			else if(choise == 3)
 			{
-				Console.WriteLine("Where would you like to go?");
-				
-				ListDir(path, true);
-				
 				while(true) {
-					string dirChoise = Console.ReadLine();
-					//check if dirchosei exists... 
-								zZzZZZZ
+					Console.WriteLine("Where would you like to go?");
+					ListDir(path, true);
+						
+
+					string input = Console.ReadLine();
+					string dirChoise = path;
+
+					if(input.Equals("..")) {
+						Console.WriteLine("old " + dirChoise);
+						dirChoise = path.Substring(0, path.Length - (Path.GetFileName(path).Length + 1));
+						Console.WriteLine("new " + dirChoise);
+					}
+					else
+						dirChoise += @"\" + input;
+
+
+					if(Directory.Exists(dirChoise)) {
+						path = dirChoise;
+						break;
+					} else {
+						Console.WriteLine("The directory \"{0}\" does not exist.", dirChoise);
+					}
 				}
 			}
 			else if(choise == 4)
 			{
+				while(true) {
 
+						Console.WriteLine("What file would you like to delete?");
+						ListDir(path, false);
+						string input = Console.ReadLine();
+						string dirChoise = path + @"\" + input;
+					
+						if(File.Exists(dirChoise)) {
+							File.Delete(dirChoise);
+							break;
+						}
+						else
+							Console.WriteLine("The directory \"{0}\" does not exist.", dirChoise);
+				
+				
+				}
+				
+			} 
+			else if(choise == 5)
+			{
+				ListDir(path, false);
 			} 
 			else 
 			{
 				continue;
 			}
-		
-
-			
+			//Clear(50);
 		}
 
+	}
+
+
+	public static void Clear(int lines) {
+		for(int i = 0; i < lines; i++) {
+			Console.WriteLine();
+		}	
 	}
 
 	public static void ListDir(string path, bool dir) {
@@ -105,8 +149,9 @@ public class Five {
 		}
 		else {
 			files = Directory.GetFiles(path, "*", SearchOption.TopDirectoryOnly);
+
 				foreach(string file in files) {
-					Console.WriteLine(file);
+					Console.WriteLine(Path.GetFileName(file));
 				} 
 		}
 
