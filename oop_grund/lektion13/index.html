@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title> Lektion13, Övning 1 </title>
+	<h1> This is a title </h1>
+</head>
+	
+<body>
+	<form id="myForm"> 
+		<div>
+			<input placeholder="Name" id="myText"> </input>
+			<br></br>
+			<button type="submit" id="btn">Confirm</button>
+		</div>
+	</from>
+
+	<script>
+		let form = document.getElementById("myForm");
+		let button = document.getElementById("btn");
+		let text = document.getElementById("myText");
+
+		button.addEventListener("click", function (event) {
+			console.log("YOOOOOOOOOO");
+			console.log("Your input: " + text.value);
+		});
+
+	</script>
+</body>
+</html>
