@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title> Lektion13, Övning 1 </title>
+</head>
+	
+<body>
+	<h1 id="tit">The magical hat!</h1>
+	<h3 id="out"></h3>
+	<form id="myForm"> 
+		<div>
+			<input placeholder="Name" id="myText"> </input>
+			<br>
+			<button type="button" id="btn">Add</button>
+			<button type="button" id="btn2">Retrive</button>
+		</div>
+	</from>
+
+	<script>
+
+		let form = document.getElementById("myForm");
+		let button = document.getElementById("btn");
+		let button2 = document.getElementById("btn2");
+		let text = document.getElementById("myText");
+		let title = document.getElementById("tit");
+		let out = document.getElementById("out");
+
+		let arr = new Array();
+
+		button.addEventListener("click", function (event) {
+			arr.push(text.value);
+			console.log("Added " + text.value + "!");
+			console.log(arr);
+			text.value = "";
+		});
+
+		button2.addEventListener("click", function (event) {
+			let last = arr.pop();
+
+			if(last != null) {
+				out.innerHTML = "You retrived " + last + "!";
+			} else {
+				out.innerHTML = "The hat is empty!";
+			}
+		});
+		
+
+
+	</script>
+</body>
+</html>
