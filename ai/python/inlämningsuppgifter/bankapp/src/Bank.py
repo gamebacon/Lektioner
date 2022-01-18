@@ -6,7 +6,7 @@ class Bank:
 
 
 	def _load(self):
-		#load data
+		return;
 
 
 
@@ -36,7 +36,7 @@ class Bank:
 		customers.remove(person_number)
 
 	def add_account(self, person_number):
-		account = Account(aöldsfj)
+		account = Account("hej")
 		return account.id;
 
 
