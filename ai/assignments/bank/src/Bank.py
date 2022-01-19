@@ -13,6 +13,9 @@ class Bank:
             for account in customer.get_accounts().values():
                 self.all_customer_accounts[account.id] = account;
 
+    def is_account(self, account_id):
+        return self.all_customer_accounts.__contains__(account_id)
+
     def __get_new_account_id(self):
         return self.get_all_customer_accounts().values()[-1].id + 1
 
@@ -20,13 +23,14 @@ class Bank:
     def get_all_customer_accounts(self):
         return self.all_customer_accounts
 
+
     # Returns all customers
     def get_customers(self):
         return self.customers.values()
 
     # Returns a specified customer
     def get_customer(self, person_number):
-        return self.customers[person_number]
+        return self.customers.get(person_number)
 
     # Change customer names
     # Returns true if successful, returns false if no customer was found

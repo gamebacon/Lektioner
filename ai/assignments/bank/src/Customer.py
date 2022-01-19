@@ -17,7 +17,7 @@ class Customer:
         return self.accounts
 
     def get_account(self, account_id):
-        return self.accounts[account_id]
+        return self.accounts.get(account_id)
 
     # todo
     def add_account(self, account):
@@ -29,9 +29,18 @@ class Customer:
     def set_last_name(self, last_name):
         self.last_name = last_name
 
+    def get_total_balance(self):
+        total_balance = 0
+        for account in self.get_accounts().values():
+            total_balance += account.balance
+        return total_balance
+
+    # Returns a list including the total sum for all accounts
+    # and a str representation for each one
     def accounts_str(self):
-        result = [0]
-        for account in self.get_accounts():
-            result[0] += account.balance
+        result = []
+        for account in self.get_accounts().values():
             result.append(account.__str__())
+        result.append("Total: $%s"%self.get_total_balance())
+
         return result

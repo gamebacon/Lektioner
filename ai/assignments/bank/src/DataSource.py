@@ -20,7 +20,7 @@ class DataSource:
             all_data = line.split(',')
 
             personal_data = all_data[0].split(":")
-            id = personal_data[0]
+            customer_id = personal_data[0]
             first_name = personal_data[1]
             last_name = personal_data[2]
             person_number = personal_data[3]
@@ -31,9 +31,9 @@ class DataSource:
                 account_type = account_data[1]
                 account_balance = float(account_data[2])
                 account = Account(account_id, account_type, account_balance)
-                accounts[id] = account
+                accounts[account_id] = account
 
-            customer = Customer(id, first_name, last_name, person_number, accounts, transactions)
+            customer = Customer(customer_id, first_name, last_name, person_number, accounts, transactions)
             customers[person_number] = customer;
 
         file.close()
