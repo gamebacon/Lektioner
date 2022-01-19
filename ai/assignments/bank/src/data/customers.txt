@@ -1,4 +1,4 @@
-111111:William:With:199810166935,1001:debit account:5000.0#1002:debit konto:3050.0
-111112:Emil:Person:1993104023543,1003:debit account:5000.0#1004:debit konto:3050.0
-111113:Johanna:Engberg:1992111343543,1005:debit konto:4.0
-111114:Gurkan:Fredriksson:1,1006:debit konto:4.0#1007:debit konto:1040.0
+111111:William:With:199810166935,1001:Debit konto:5000.0#1002:Debit konto:3050.0
+111112:Emil:Person:1993104023543,1003:Debit konto:5000.0#1004:Debit konto:3050.0
+111113:Johanna:Engberg:1992111343543,1005:Debit konto:4.0
+111114:Gurkan:Fredriksson:1,1006:Debit konto:4.0#1007:Debit konto:1040.0

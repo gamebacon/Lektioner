@@ -23,8 +23,7 @@ class Bank:
     def get_all_customer_accounts(self):
         return self.all_customer_accounts
 
-
-    # Returns all customers
+    # Returns a list of all customers
     def get_customers(self):
         return self.customers.values()
 
@@ -67,7 +66,7 @@ class Bank:
         new_account_id = -1
         if customer is not None:
             new_account_id = self.__get_new_account_id()
-            new_account = Account(new_account_id, "debit account", 0)
+            new_account = Account(new_account_id, "Debit konto", 0.0)
             customer.add_account(new_account)
         return new_account_id
 
@@ -104,7 +103,7 @@ class Bank:
         return account.__str__
 
     # Returns all transaction history for specified account
-    #todo: this
+    # todo this
     def get_transactions(self, person_number, account_id):
         customer = self.get_customer(person_number)
         account = customer.get_account(account_id)

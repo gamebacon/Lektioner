@@ -5,7 +5,7 @@ class Account:
         self.balance = balance
 
     def __str__(self):
-        return "(%s) $%s - %s" % (self.id, self.balance, self.type)
+        return "%s | %s | %s SEK " % (self.id, self.type, self.balance)
 
     def withdraw(self, amount):
         self.balance -= amount

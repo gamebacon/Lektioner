@@ -23,11 +23,17 @@ class Customer:
     def add_account(self, account):
         self.accounts[account.id] = account
 
+    def get_person_number(self):
+        return self.person_number
+
     def set_first_name(self, first_name):
         self.first_name = first_name
 
     def set_last_name(self, last_name):
         self.last_name = last_name
+
+    def get_full_name(self):
+        return self.first_name + " " + self.last_name
 
     def get_total_balance(self):
         total_balance = 0
@@ -39,8 +45,8 @@ class Customer:
     # and a str representation for each one
     def accounts_str(self):
         result = []
+        result.append("\n------ Konton -------");
         for account in self.get_accounts().values():
             result.append(account.__str__())
-        result.append("Total: $%s"%self.get_total_balance())
-
+        result.append("\nTotalt värde: %s SEK\n" % self.get_total_balance())
         return result
