@@ -11,6 +11,7 @@ class Main:
         self.bank = Bank()
         self.current_customer = None
         self.start_ui()
+        self.bank.save()
 
     def start_ui(self):
         while True:
@@ -92,17 +93,20 @@ class Main:
                 print(account.__str__())
                 inp = input("(1)Visa transaktioner (2)Avsluta konto (3)Avbryt\n")
                 if inp is "1":
-                    print(self.bank.get_transactions())
-                elif inp is "2":
-                    if input("Ange kontonumret för att radera kontot: ") == account.id:
-                        self.bank.close_account(customer.get_person_number(), account.id)
-                        print("Kontot togs bort och du fick tillbaka %s kr" % account.balance)
-                    else:
-                        print("Du angav fel kontonummer.")
+                    print(self.bank.get_transactions(customer.get_person_number(), account.id))
                     ok()
-                    return
-                else:
-                    return
+                    continue
+                elif inp is "2":
+                    self.bank_delete_account_ui(customer, account)
+                return
+
+    def bank_delete_account_ui(self, customer, account):
+        if input("Ange kontonumret för att radera kontot: ") == account.id:
+            self.bank.close_account(customer.get_person_number(), account.id)
+            print("Kontot togs bort och du fick tillbaka %s kr" % account.balance)
+        else:
+            print("Du angav fel kontonummer.")
+        ok()
 
     def bank_remove_customer_ui(self, customer):
         inp = input("Ange personnumret for att konfirmera radering.\n")
@@ -204,5 +208,4 @@ def intput(prompt):
             pass
 
 
-if __name__ == '__main__':
-    main = Main()
+Main()

@@ -1,23 +1,32 @@
+import datetime
+
 from src.Account import Account
 from src.Customer import Customer
 from src.DataSource import DataSource
+
+from src.Transaction import Transaction
 
 
 class Bank:
 
     def __init__(self):
-        self.customers = DataSource().get_all()
+        self.datasource = DataSource()
+        self.customers = self.datasource.get_all()
         self.all_customer_accounts = {}
 
         for customer in self.customers.values():
             for account in customer.get_accounts().values():
                 self.all_customer_accounts[account.id] = account;
 
+    def save(self):
+        self.datasource.save_all(self.customers)
+
     def is_account(self, account_id):
         return self.all_customer_accounts.__contains__(account_id)
 
+    # create new account id
     def __get_new_account_id(self):
-        return self.get_all_customer_accounts().values()[-1].id + 1
+        return -1;#self.get_all_customer_accounts().//.values()[-1].id + 1
 
     # Returns a dictionary with all accounts
     def get_all_customer_accounts(self):
@@ -101,6 +110,8 @@ class Bank:
         account = customer.get_account(account_id)
         del customer.get_accounts()[account_id]
         return account.__str__
+
+
 
     # Returns all transaction history for specified account
     # todo this

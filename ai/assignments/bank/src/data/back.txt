@@ -1,0 +1,5 @@
+111111:William:With:19981016,1001:Debit konto:950#1002:Debit konto:520
+111112:Oskar:banan:1,1003:Debit konto:50#1004:Debit konto:152
+
+
+1003,102:2022-01-20-15-39:300.0#104:2022-01-20-15-38:350.0

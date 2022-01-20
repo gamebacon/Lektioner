@@ -1,12 +1,11 @@
 class Customer:
 
-    def __init__(self, id, first_name, last_name, person_number, accounts, transactions):
+    def __init__(self, id, first_name, last_name, person_number, accounts):
         self.id = id
         self.first_name = first_name
         self.last_name = last_name
         self.person_number = person_number
         self.accounts = accounts
-        self.transactions = transactions
 
     def __str__(self):
         return "{%s, %s %s, %s}" % (self.id, self.first_name, self.last_name, self.person_number)
