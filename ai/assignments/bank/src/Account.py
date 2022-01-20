@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 
 from src.Transaction import Transaction
 
@@ -27,11 +27,21 @@ class Account:
     def get_id(self):
         return self.id
 
+    def get_transactions(self):
+        return self.transactions
+
+    # Returns a visual presentation all transactions
+    def view_transactions(self):
+        view = "Transaktioner\n"#"-------- Transaktioner ---------\n"
+        for transaction in self.transactions:
+            view += "%s\n" % transaction.__str__()
+        return view
+
+    # Creates a new transaction
     def new_transaction(self, amount):
-        transaction_id = -1;
-        date = datetime.date.today()
+        transaction_id = len(self.transactions) + 1;
+        date = datetime.now().strftime("%Y-%m-%d %H:%M")
         transaction = Transaction(transaction_id, date, amount)
         self.transactions.append(transaction)
-        print(transaction.__str__())
 
 

@@ -114,8 +114,7 @@ class Bank:
 
 
     # Returns all transaction history for specified account
-    # todo this
     def get_transactions(self, person_number, account_id):
         customer = self.get_customer(person_number)
         account = customer.get_account(account_id)
-        return None
+        return account.get_transactions()

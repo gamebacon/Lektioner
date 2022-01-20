@@ -1,6 +1,20 @@
 from src.Account import Account
 from src.Customer import Customer
-from src.Transaction import Transaction
+from src.Transaction import Transaction, get_id
+
+
+def __write__(file_name, text):
+    file = open(file_name, "wt")
+    file.write(text)
+    file.close()
+    pass
+
+
+def __read__(file_name):
+    file = open(file_name, "rt")
+    text = file.read()
+    file.close()
+    return text;
 
 
 class DataSource:
@@ -9,44 +23,51 @@ class DataSource:
         pass
 
     def save_all(self, customers):
-        file = open("data/customers.txt", "wt")
-
         text = ""
-
         for customer in customers.values():
             text += "%s:%s:%s:%s," % (customer.id, customer.first_name, customer.last_name, customer.person_number)
             for account in customer.get_accounts().values():
                 text += "%s:%s:%s#" % (account.id, account.type, account.balance)
             text = text[0:-1] + "\n"
+        __write__("data/customers.txt", text)
+        self.__save_transactions__(customers)
 
+    # Saves all the transactions
+    def __save_transactions__(self, customers):
+        text = ""
+        for customer in customers.values():
+            for account in customer.get_accounts().values():
+                text += account.id + ","
+                for transaction in account.get_transactions():
+                    text += "%s;%s;%s#" % (transaction.id, transaction.date, transaction.amount)
+                text = text[0:-1] + "\n"
+        __write__("data/transactions.txt", text)
 
-        print(text)
-        file.write(text)
-        file.close()
-        pass
-
-    # Map<account_id, List<Transaction>>
-    def get_all_transactions(self):
+    # Returns a dictionary of all account's and their transactions
+    # With account-id as key and a tuple of the account's transactions
+    def __get_all_transactions__(self):
         all_transactions = {}
-        file = open("data/transactions.txt", "rt")
-        lines = file.read().split('\n')
+        lines = __read__("data/transactions.txt").split("\n")
 
         for line in lines:
             account_transactions = []
             data = line.split(",")
             account_id = data[0]
-            for transactions in data[1].split("#"):
-                for transaction in transactions.split(":"):
-                    id = transaction[0]
-                    date = transaction[1]
-                    amount = transaction[2]
-                    account_transactions.append(Transaction(id, date, amount))
+            if len(data) > 1 and len(data[1]) > 0:
+                for transaction in data[1].split("#"):
+                    transaction_details = transaction.split(";")
+                    id = transaction_details[0]
+                    date = transaction_details[1]
+                    amount = transaction_details[2]
+                    t = Transaction(id, date, amount)
+                    account_transactions.append(t)
+            account_transactions.sort(key=get_id)
             all_transactions[account_id] = account_transactions
         return all_transactions
 
     def get_all(self):
         customers = {}
-        all_transactions = self.get_all_transactions()
+        all_transactions = self.__get_all_transactions__()
         file = open("data/customers.txt", "rt")
         lines = file.read().split('\n')
 

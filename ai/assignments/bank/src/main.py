@@ -1,9 +1,10 @@
 from Bank import Bank
 
 
-def clear(num):
-    for i in range(0, num):
+def clear(num, msg = ""):
+    for i in range(0, num-1):
         print()
+    print(msg)
 
 
 class Main:
@@ -15,14 +16,14 @@ class Main:
 
     def start_ui(self):
         while True:
-            inp = input("Jag är...\n(1)Kund (2)Bank\n").lower()
-            if inp == "0":
-                break
-            elif inp == "1":
-                self.customer_login_ui()
-                break
+            inp = input("Jag är...\n(1)Kund (2)Bank\n")
+            if inp == "1":
+                if self.customer_login_ui():
+                    break
             elif inp == "2":
                 self.bank_ui()
+                break
+            elif inp == "0":
                 break
             else:
                 print("Skriv \"1\" eller \"2\". Alternativt \"0\" för att avsluta.")
@@ -64,6 +65,8 @@ class Main:
             elif inp is "3":
                 self.bank_remove_customer_ui(customer)
                 return
+            else:
+                return
 
     def bank_modify_customer_ui(self, customer):
         while True:
@@ -90,7 +93,7 @@ class Main:
         if account is not None:
             while True:
                 clear(50)
-                print(account.__str__())
+                print("> " + account.__str__())
                 inp = input("(1)Visa transaktioner (2)Avsluta konto (3)Avbryt\n")
                 if inp is "1":
                     print(self.bank.get_transactions(customer.get_person_number(), account.id))
@@ -132,10 +135,12 @@ class Main:
         customer = self.bank.get_customer(person_number)
         if customer is None:
             print("Det fanns inget konto registrerat med personnumret \"%s\"." % person_number)
+            ok()
         else:
             self.current_customer = customer
             print("Du är inloggad som %s %s." % (self.current_customer.first_name, self.current_customer.last_name))
             self.customer_ui(customer)
+        return customer is not None
 
     def customer_ui(self, customer):
         while True:
@@ -166,24 +171,25 @@ class Main:
     def account_ui(self, account):
         while True:
             clear(50)
-            print(account.__str__())
-            inp = input("\n(1)Uttag (2)Insättning (3)Avbryt\n")
+            print("> " + account.__str__())
+            inp = input("\n(1)Uttag (2)Insättning (3)Historik (4)Avbryt\n")
             if inp is "1" or inp is "2":
                 amount = intput("Ange mängd: ")
-
                 if inp == "1":
                     self.withdraw_ui(account, amount)
                 elif inp == "2":
                     self.deposit_ui(account, amount)
+            elif inp is "3":
+                clear(50, account.view_transactions())
+                ok()
             else:
                 return
 
+    # Returns a specified account
     def get_customer_account(self, customer):
         clear(50)
-
         for line in customer.accounts_str():
             print(line)
-
         num_inp = input("Ange ett kontonummer: ")
 
         account = customer.get_account(num_inp)
@@ -193,6 +199,7 @@ class Main:
             ok()
         else:
             return account
+
 
 def ok(prompt = "(1)Ok\n"):
     ok = input(prompt)
