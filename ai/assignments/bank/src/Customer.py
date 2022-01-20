@@ -10,6 +10,9 @@ class Customer:
     def __str__(self):
         return "{%s, %s %s, %s}" % (self.id, self.first_name, self.last_name, self.person_number)
 
+    def get_id(self):
+        return self.id
+
     # Returns account dictionary
     # with account_id as key and the account for value
     def get_accounts(self):

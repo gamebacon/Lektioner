@@ -1,2 +1,3 @@
 111111:William:With:19981016,1001:Debit konto:950.0#1002:Debit konto:520.0
 111112:Oskar:banan:1,1003:Debit konto:260.0#1004:Debit konto:194060.0
+111113:1:2:3

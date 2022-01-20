@@ -35,7 +35,8 @@ class Main:
                 self.bank_display_customers_ui()
             elif inp is "2":
                 customer = self.get_customer_ui()
-                self.bank_customer_ui(customer)
+                if customer is not None:
+                    self.bank_customer_ui(customer)
             elif inp is "3":
                 self.bank_new_customer_ui()
             else:
@@ -51,6 +52,8 @@ class Main:
             customer = self.bank.get_customer(person_number)
             if customer is None:
                 print("En person med personnummer \"%s\" hittades inte." % person_number)
+                ok()
+                break
             else:
                 return customer
 
@@ -82,7 +85,9 @@ class Main:
         while True:
             inp = input("(1)Nytt konto (2)Hantera konto (3)Avbryt\n")
             if inp is "1":
-                self.bank.add_account(customer.get_person_number())
+                new_account_id = self.bank.add_account(customer.get_person_number())
+                print("A new account was created with id %s." % new_account_id)
+                ok()
             elif inp is "2":
                 self.bank_customer_account_ui(customer)
             else:
@@ -125,9 +130,9 @@ class Main:
         last_name = input("Ange efternamn: ")
         person_number = input("Ange personnummer: ")
         if self.bank.add_customer(first_name, last_name, person_number):
-            print("Ett kundkonto för %s %s skapades." % (first_name, last_name))
+            print("Ett kundkonto skapades för %s %s." % (first_name, last_name))
         else:
-            print("Ett kundkonto med personnumret \"%s\" finns redan.")
+            print("Ett kundkonto med personnumret \"%s\" finns redan." % person_number)
         ok()
 
     def customer_login_ui(self):

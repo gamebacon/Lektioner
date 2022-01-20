@@ -25,8 +25,11 @@ class Bank:
         return self.all_customer_accounts.__contains__(account_id)
 
     # create new account id
-    def __get_new_account_id(self):
-        return -1;#self.get_all_customer_accounts().//.values()[-1].id + 1
+    def __get_new_account_id(self, customer):
+        if len(customer.accounts.values()) == 0:
+            return "1000"
+        else:
+            return str(int(list(customer.accounts.values())[-1].id) + 1)
 
     # Returns a dictionary with all accounts
     def get_all_customer_accounts(self):
@@ -53,10 +56,10 @@ class Bank:
     # Creates a new customer.
     # Returns false if the person is already a customer, true otherwise.
     def add_customer(self, first_name, last_name, person_number):
-        if self.customers[person_number] is None:
-            new_id = self.customers[-1].id + 1
-            new_customer = Customer(new_id, first_name, last_name, person_number, {}, {})
-            self.customers.append(new_customer)
+        if self.customers.get(person_number) is None:
+            new_id = str(int(list(self.customers.values())[-1].id) + 1)
+            new_customer = Customer(new_id, first_name, last_name, person_number, {})
+            self.customers[person_number] = new_customer
             return True
         else:
             return False
@@ -74,8 +77,8 @@ class Bank:
         customer = self.get_customer(person_number)
         new_account_id = -1
         if customer is not None:
-            new_account_id = self.__get_new_account_id()
-            new_account = Account(new_account_id, "Debit konto", 0.0)
+            new_account_id = self.__get_new_account_id(customer)
+            new_account = Account(new_account_id, "Debit konto", 0.0, [])
             customer.add_account(new_account)
         return new_account_id
 

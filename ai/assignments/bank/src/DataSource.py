@@ -85,14 +85,16 @@ class DataSource:
             last_name = personal_data[2]
             person_number = personal_data[3]
 
-            for all_account_data in all_data[1].split("#"):
-                account_data = all_account_data.split(":")
-                account_id = account_data[0]
-                account_type = account_data[1]
-                account_balance = float(account_data[2])
-                transactions = all_transactions.get(account_id)
-                account = Account(account_id, account_type, account_balance, transactions)
-                accounts[account_id] = account
+            # print(">%s<"%line)
+            if len(all_data) > 1:
+                for all_account_data in all_data[1].split("#"):
+                    account_data = all_account_data.split(":")
+                    account_id = account_data[0]
+                    account_type = account_data[1]
+                    account_balance = float(account_data[2])
+                    transactions = all_transactions.get(account_id)
+                    account = Account(account_id, account_type, account_balance, transactions)
+                    accounts[account_id] = account
 
             customer = Customer(customer_id, first_name, last_name, person_number, accounts)
             customers[person_number] = customer;

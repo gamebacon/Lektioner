@@ -32,7 +32,7 @@ class Account:
 
     # Returns a visual presentation all transactions
     def view_transactions(self):
-        view = "Transaktioner\n"#"-------- Transaktioner ---------\n"
+        view = "Transaktioner\n"
         for transaction in self.transactions:
             view += "%s\n" % transaction.__str__()
         return view
