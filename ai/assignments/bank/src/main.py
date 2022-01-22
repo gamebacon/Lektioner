@@ -1,10 +1,15 @@
+import re
+
 from Bank import Bank
 
 
-def clear(num, msg = ""):
-    for i in range(0, num-1):
-        print()
-    print(msg)
+# clears screen and optionally prints message
+def clear(num, msg=""):
+    print(num * "\n" + msg)
+
+
+def is_personnumber(person_number):
+    return re.search("[0-9]{10}", person_number)
 
 
 class Main:
@@ -32,6 +37,7 @@ class Main:
         while True:
             inp = input("(1)Visa kunder (2)Hantera kund (3)Ny Kund (4)Avsluta\n")
             if inp is "1":
+                clear(50, "--------  Kunder (%d st)  ------" % len(self.bank.customers))
                 self.bank_display_customers_ui()
             elif inp is "2":
                 customer = self.get_customer_ui()
@@ -39,7 +45,7 @@ class Main:
                     self.bank_customer_ui(customer)
             elif inp is "3":
                 self.bank_new_customer_ui()
-            else:
+            elif inp is "4":
                 break
 
     def bank_display_customers_ui(self):
@@ -51,7 +57,7 @@ class Main:
             person_number = input("Ange ett personnummer: ")
             customer = self.bank.get_customer(person_number)
             if customer is None:
-                print("En person med personnummer \"%s\" hittades inte." % person_number)
+                print("En kund med personnummer \"%s\" hittades inte." % person_number)
                 ok()
                 break
             else:
@@ -59,7 +65,8 @@ class Main:
 
     def bank_customer_ui(self, customer):
         while True:
-            print("------- %s %s, %s ---------" % (customer.first_name, customer.last_name, customer.get_person_number()))
+            print(
+                "------- %s %s, %s ---------" % (customer.first_name, customer.last_name, customer.get_person_number()))
             inp = input("(1)Kunduppgifter (2)Konton (3)Radera (4)Avbryt\n")
             if inp is "1":
                 self.bank_modify_customer_ui(customer)
@@ -78,7 +85,7 @@ class Main:
                 customer.set_first_name(input("Nytt förnamn: "))
             elif inp is "2":
                 customer.set_last_name(input("Nytt efternamn: "))
-            else:
+            elif inp is "3":
                 return
 
     def bank_customer_accounts_ui(self, customer):
@@ -86,30 +93,30 @@ class Main:
             inp = input("(1)Nytt konto (2)Hantera konto (3)Avbryt\n")
             if inp is "1":
                 new_account_id = self.bank.add_account(customer.get_person_number())
-                print("A new account was created with id %s." % new_account_id)
+                print("Ett nytt konto for %s skapades med ID %s." % (customer.get_full_name(), new_account_id))
                 ok()
             elif inp is "2":
                 self.bank_customer_account_ui(customer)
-            else:
+            elif inp is "3":
                 return
 
     def bank_customer_account_ui(self, customer):
         account = self.get_customer_account(customer)
         if account is not None:
             while True:
-                clear(50)
-                print("> " + account.__str__())
+                clear(50, "> " + account.__str__())
                 inp = input("(1)Visa transaktioner (2)Avsluta konto (3)Avbryt\n")
                 if inp is "1":
-                    print(self.bank.get_transactions(customer.get_person_number(), account.id))
+                    print(account.view_transactions())
                     ok()
-                    continue
                 elif inp is "2":
                     self.bank_delete_account_ui(customer, account)
-                return
+                    break
+                elif inp is "3":
+                    return
 
     def bank_delete_account_ui(self, customer, account):
-        if input("Ange kontonumret för att radera kontot: ") == account.id:
+        if input("Ange kontonumret för att radera kontot: ") == str(account.id):
             self.bank.close_account(customer.get_person_number(), account.id)
             print("Kontot togs bort och du fick tillbaka %s kr" % account.balance)
         else:
@@ -117,8 +124,8 @@ class Main:
         ok()
 
     def bank_remove_customer_ui(self, customer):
-        inp = input("Ange personnumret for att konfirmera radering.\n")
-        if  inp == customer.get_person_number():
+        inp = input("Ange personnumret for att slutföra radering.\n")
+        if inp == customer.get_person_number():
             self.bank.remove_customer(customer.person_number)
             print("Kundkontot för %s togs bort." % customer.get_full_name())
         else:
@@ -128,15 +135,27 @@ class Main:
     def bank_new_customer_ui(self):
         first_name = input("Ange förnamn: ")
         last_name = input("Ange efternamn: ")
-        person_number = input("Ange personnummer: ")
-        if self.bank.add_customer(first_name, last_name, person_number):
-            print("Ett kundkonto skapades för %s %s." % (first_name, last_name))
-        else:
-            print("Ett kundkonto med personnumret \"%s\" finns redan." % person_number)
+        person_number = self.get_person_number()
+
+        if person_number:
+            if self.bank.add_customer(first_name, last_name, person_number):
+                print("Ett kundkonto skapades för %s %s." % (first_name, last_name))
+            else:
+                print("Ett kundkonto med personnumret \"%s\" finns redan." % person_number)
         ok()
 
+    def get_person_number(self):
+        person_number = input("Ange personnummer (YYYYMMDDXXXX)\n")
+        if is_personnumber(person_number):
+            return person_number
+        else:
+            print("\"%s\" är inte ett personnummer." % person_number)
+        return None
+
     def customer_login_ui(self):
-        person_number = input("Ange ditt personnummer (YYYYMMDDXXXX)\n")
+        person_number = self.get_person_number()
+        if person_number is None:
+            return
         customer = self.bank.get_customer(person_number)
         if customer is None:
             print("Det fanns inget konto registrerat med personnumret \"%s\"." % person_number)
@@ -193,22 +212,31 @@ class Main:
     # Returns a specified account
     def get_customer_account(self, customer):
         clear(50)
-        for line in customer.accounts_str():
-            print(line)
-        num_inp = input("Ange ett kontonummer: ")
-
-        account = customer.get_account(num_inp)
-
-        if account is None:
-            print("Ett konto med kontonummer \"%s\" hittades inte." % num_inp)
-            ok()
+        if len(customer.get_accounts()) == 0:
+            print("Inga konton hittades.")
         else:
-            return account
+            for line in customer.accounts_str():
+                print(line)
+
+            account_id = -1
+            inp = input("Ange ett kontonummer: ")
+            try:
+                account_id = int(inp)
+            except:
+                pass
+            account = customer.get_account(account_id)
+
+            if account is None:
+                print("Ett konto med kontonummer \"%s\" hittades inte." % inp)
+                ok()
+            else:
+                return account
 
 
-def ok(prompt = "(1)Ok\n"):
+def ok(prompt="(1)Ok\n"):
     ok = input(prompt)
     clear(50)
+
 
 def intput(prompt):
     while True:

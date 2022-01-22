@@ -8,7 +8,7 @@ class Customer:
         self.accounts = accounts
 
     def __str__(self):
-        return "{%s, %s %s, %s}" % (self.id, self.first_name, self.last_name, self.person_number)
+        return "%s | %s | %s %s" % (self.id, self.person_number, self.first_name, self.last_name)
 
     def get_id(self):
         return self.id
@@ -50,5 +50,5 @@ class Customer:
         result.append("\n------ Konton -------");
         for account in self.get_accounts().values():
             result.append(account.__str__())
-        result.append("\nTotalt värde: %s SEK\n" % self.get_total_balance())
+        result.append("\nTotalt värde: %.1f SEK\n" % self.get_total_balance())
         return result

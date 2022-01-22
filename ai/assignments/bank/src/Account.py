@@ -32,9 +32,11 @@ class Account:
 
     # Returns a visual presentation all transactions
     def view_transactions(self):
-        view = "Transaktioner\n"
-        for transaction in self.transactions:
-            view += "%s\n" % transaction.__str__()
+        view = "Inga transaktioner ännu."
+        if len(self.transactions) > 0:
+            view = "Transaktioner\n"
+            for transaction in self.transactions:
+                view += "%s\n" % transaction.__str__()
         return view
 
     # Creates a new transaction

@@ -13,10 +13,10 @@ class Bank:
         self.datasource = DataSource()
         self.customers = self.datasource.get_all()
         self.all_customer_accounts = {}
-
         for customer in self.customers.values():
             for account in customer.get_accounts().values():
                 self.all_customer_accounts[account.id] = account;
+
 
     def save(self):
         self.datasource.save_all(self.customers)
@@ -26,10 +26,14 @@ class Bank:
 
     # create new account id
     def __get_new_account_id(self, customer):
-        if len(customer.accounts.values()) == 0:
-            return "1000"
-        else:
-            return str(int(list(customer.accounts.values())[-1].id) + 1)
+        self.all_customer_accounts = {k: v for k, v in sorted(list(self.all_customer_accounts.items()))}
+        id = 1001
+        for existing_id in self.all_customer_accounts.keys():
+            if existing_id == id:
+                id += 1
+            else:
+                break;
+        return id
 
     # Returns a dictionary with all accounts
     def get_all_customer_accounts(self):
@@ -80,6 +84,7 @@ class Bank:
             new_account_id = self.__get_new_account_id(customer)
             new_account = Account(new_account_id, "Debit konto", 0.0, [])
             customer.add_account(new_account)
+            self.all_customer_accounts[new_account.id] = new_account
         return new_account_id
 
     # Returns a textual presentation of a specified account

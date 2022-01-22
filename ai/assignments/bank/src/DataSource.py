@@ -37,7 +37,7 @@ class DataSource:
         text = ""
         for customer in customers.values():
             for account in customer.get_accounts().values():
-                text += account.id + ","
+                text += str(account.id) + ","
                 for transaction in account.get_transactions():
                     text += "%s;%s;%s#" % (transaction.id, transaction.date, transaction.amount)
                 text = text[0:-1] + "\n"
@@ -50,9 +50,11 @@ class DataSource:
         lines = __read__("data/transactions.txt").split("\n")
 
         for line in lines:
+            if len(line) == 0:
+                continue
             account_transactions = []
             data = line.split(",")
-            account_id = data[0]
+            account_id = int(data[0])
             if len(data) > 1 and len(data[1]) > 0:
                 for transaction in data[1].split("#"):
                     transaction_details = transaction.split(";")
@@ -89,11 +91,11 @@ class DataSource:
             if len(all_data) > 1:
                 for all_account_data in all_data[1].split("#"):
                     account_data = all_account_data.split(":")
-                    account_id = account_data[0]
+                    account_id = int(account_data[0])
                     account_type = account_data[1]
                     account_balance = float(account_data[2])
                     transactions = all_transactions.get(account_id)
-                    account = Account(account_id, account_type, account_balance, transactions)
+                    account = Account(account_id, account_type, account_balance, transactions if transactions else [])
                     accounts[account_id] = account
 
             customer = Customer(customer_id, first_name, last_name, person_number, accounts)
